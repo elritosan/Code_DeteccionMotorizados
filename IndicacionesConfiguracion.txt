@@ -1,0 +1,34 @@
+Tener instalado python 3.9
+
+Actualizar el python
+
+    py -3.9 -m pip install --upgrade pip
+
+Luego instalar
+
+    py -3.9 -m pip install virtualenv
+
+Abrir el Terminal en VS y crear un Entorno Virtual llamado "env_python39_deteccion_motorizados"
+    
+    py -3.9 -m virtualenv env_python39_deteccion_motorizados
+
+Activar Entorno el Entorno
+
+    cd env_python39_deteccion_motorizados/Scripts
+
+    .\activate
+
+Dentro del Entorno Virtual se instalar las Siguiente librerias
+
+    pip install torch torchvision opencv-python pytesseract numpy ultralytics
+
+Descargar modelo preentrenado de YOLO: https://docs.ultralytics.com/es/datasets/detect/open-images-v7/#open-images-v7-pretrained-models
+
+Descargar Tesseract: https://github.com/UB-Mannheim/tesseract/wiki
+
+Configurar el PATH de Tesseract:
+    C:\Program Files\Tesseract-OCR
+    C:\Program Files\Tesseract-OCR\tesseract.exe
+
+
+
