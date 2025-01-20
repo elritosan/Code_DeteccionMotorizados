@@ -16,7 +16,7 @@ Activar Entorno el Entorno
 
     cd env_python39_deteccion_motorizados/Scripts
 
-    .\activate
+    ./activate
 
 Dentro del Entorno Virtual se instalar las Siguiente librerias
 
@@ -24,11 +24,8 @@ Dentro del Entorno Virtual se instalar las Siguiente librerias
 
 Descargar modelo preentrenado de YOLO: https://docs.ultralytics.com/es/datasets/detect/open-images-v7/#open-images-v7-pretrained-models
 
-Descargar Tesseract: https://github.com/UB-Mannheim/tesseract/wiki
+    pip install paddleocr paddlepaddle
 
-Configurar el PATH de Tesseract:
-    C:\Program Files\Tesseract-OCR
-    C:\Program Files\Tesseract-OCR\tesseract.exe
 
 
 
