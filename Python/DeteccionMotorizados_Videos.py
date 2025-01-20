@@ -2,10 +2,8 @@ import cv2
 import math
 import ultralytics
 import numpy as np
-import pytesseract  # OCR para reconocimiento de placas
-
-# Configurar la ruta de Tesseract si es necesario (Windows)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+import easyocr  # OCR para reconocimiento de placas
+import time  # Para controlar el tiempo transcurrido
 
 # Carga del modelo YOLOv8
 model = ultralytics.YOLO("Other/yolov8l-oiv7.pt")
@@ -18,6 +16,9 @@ thickness = 2
 # Clases de interés
 clases_interes = ['Person', 'Motorcycle', 'Helmet']
 
+# Cargar OCR con EasyOCR
+ocr = easyocr.Reader(['en'])
+
 # Carga del video
 cap = cv2.VideoCapture('Resource/Videos/Video_Para_Programar.MOV')
 
@@ -27,12 +28,16 @@ def calcular_centro(x1, y1, x2, y2):
 
 def reconocer_placa(imagen_placa):
     """Extrae texto de una imagen de placa usando OCR."""
-    gris = cv2.cvtColor(imagen_placa, cv2.COLOR_BGR2GRAY)
-    _, binaria = cv2.threshold(gris, 100, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    texto = pytesseract.image_to_string(binaria, config='--psm 8')  # Configura para placas
-    return texto.strip()
+    resultado_ocr = ocr.readtext(imagen_placa)
+    if resultado_ocr:
+        return resultado_ocr[0][1]  # Devuelve el texto de la primera detección
+    return ""
 
 # Procesar el video cuadro por cuadro
+last_detected_time = None  # Tiempo en que se detectó la motocicleta y persona
+placa_img = None  # Imagen de la placa
+placa_texto = ""  # Texto de la placa
+
 while cap.isOpened():
     ret, frame = cap.read()  
     if not ret:  
@@ -100,20 +105,29 @@ while cap.isOpened():
             cv2.rectangle(frame, (mx1, my1), (mx2, my2), (255, 0, 0), 2)
             cv2.putText(frame, f"Motorcycle {m_conf}%", (mx1, my1 - 10), font, fontScale, (255, 0, 0), thickness)
 
-            # Si la persona NO tiene casco, escanear placa
+            # Si la persona NO tiene casco, preparar escaneo de placa
             if not casco:
-                # Suponiendo que la placa está en la parte inferior de la moto
-                placa_x1, placa_y1 = mx1, my2 - 30
-                placa_x2, placa_y2 = mx2, my2
-                placa_img = frame[placa_y1:placa_y2, placa_x1:placa_x2]
+                # Crear un subframe utilizando las coordenadas de la motocicleta
+                placa_img = frame[my1:my2, mx1:mx2]  # Se usa la misma región para el subframe de la motocicleta
 
                 if placa_img.size > 0:
-                    texto_placa = reconocer_placa(placa_img)
-                    placas_detectadas.append((placa_x1, placa_y1, texto_placa))
+                    # Si no se ha detectado la placa previamente o si han pasado 0.5 segundos
+                    if last_detected_time is None or time.time() - last_detected_time >= 0.5:
+                        placa_texto = reconocer_placa(placa_img)
+                        placas_detectadas.append((mx1, my1, placa_texto))
 
-                    # Dibujar placa detectada en el video
-                    cv2.rectangle(frame, (placa_x1, placa_y1), (placa_x2, placa_y2), (0, 165, 255), 2)
-                    cv2.putText(frame, f"Placa: {texto_placa}", (placa_x1, placa_y1 - 10), font, fontScale, (0, 165, 255), thickness)
+                        # Mostrar el valor de la placa en la consola
+                        print(f"Placa detectada: {placa_texto}")
+
+                        # Actualizar el tiempo de detección
+                        last_detected_time = time.time()
+
+                    # Dibujar la placa detectada en el video
+                    cv2.rectangle(frame, (mx1, my1), (mx2, my2), (0, 165, 255), 2)
+                    cv2.putText(frame, f"Placa: {placa_texto}", (mx1, my1 - 10), font, fontScale, (0, 165, 255), thickness)
+
+                    # Mostrar el subframe de la placa en una ventana separada
+                    cv2.imshow("Subframe Placa", placa_img)
 
         # Dibujar casco si hay
         if casco:
