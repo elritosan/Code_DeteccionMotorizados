@@ -26,6 +26,11 @@ Descargar modelo preentrenado de YOLO: https://docs.ultralytics.com/es/datasets/
 
     pip install paddleocr paddlepaddle
 
+    pip install easyocr
+
+    
+
+
 
 
 
