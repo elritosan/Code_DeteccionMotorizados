@@ -10,6 +10,7 @@ from sklearn.neighbors import NearestNeighbors
 def detectar_motorizados(image_path):
     image = cv2.imread(image_path)
     original_image = image.copy()
+    image_detecciones = image.copy()  # Nueva imagen para las detecciones
     results_yolo = model(image)[0]
     motorizados = []
     id_motorizado = 0
@@ -21,7 +22,10 @@ def detectar_motorizados(image_path):
         
         if class_name in CLASES_INTERES:
             color = CLASES_INTERES[class_name]
-            cv2.rectangle(image, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+            # Dibujar el recuadro y la clase en image_detecciones
+            cv2.rectangle(image_detecciones, (int(x1), int(y1)), (int(x2), int(y2)), color, 2)
+            cv2.putText(image_detecciones, class_name, (int(x1), int(y1) - 10), 
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
             centroid = calcular_centroid(x1, y1, x2, y2)
             print(f"Centroide de {class_name}: {centroid}")
             
@@ -41,4 +45,4 @@ def detectar_motorizados(image_path):
                     if distances[0][0] < 250:
                         motorizados[indices[0][0]].agregar_objeto(class_name, centroid)
     
-    return motorizados, original_image
+    return motorizados, original_image, image_detecciones
