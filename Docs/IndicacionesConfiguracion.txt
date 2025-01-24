@@ -28,7 +28,16 @@ Descargar modelo preentrenado de YOLO: https://docs.ultralytics.com/es/datasets/
 
     pip install easyocr
 
-    
+Para Conectarse a PostgreSQL
+
+    pip install psycopg2
+
+Crear una Base De Datos Local (PostgreSQL)
+
+-- host: localhost
+-- database: BD_DeteccionMotorizados
+-- user: postgres
+-- password: 123456
 
 
 
