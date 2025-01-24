@@ -57,6 +57,10 @@ class MotoDetectorApp:
 
         for motorizado in motorizados:
             motorizado.mostrar_info()
+            # AQUIIIIIIIIIIIIIIIIIIIIIIIIII PARA OBTENER LOS DATOS Y ENVIAR LA INFORMACIÓN
+            # motorizado.placa,  # Placa
+            # motorizado.personas,  # Número de personas
+            # motorizado.cascos  # Número de cascos
 
         # Enviar notificaciones
         procesar_notificaciones(motorizados, HOTMAIL_USER, HOTMAIL_PASSWORD)
