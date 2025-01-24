@@ -1,6 +1,7 @@
 # Services/Reconocimiento_placas.py
 import easyocr
 import cv2
+from Utils.Procesamiento import validar_placa
 
 def reconocer_placa(image, motorizados):
     reader = easyocr.Reader(['es'], gpu=True)
@@ -13,5 +14,5 @@ def reconocer_placa(image, motorizados):
             gray = cv2.equalizeHist(gray)
             results_ocr = reader.readtext(gray, detail=1, contrast_ths=0.7, adjust_contrast=0.5)
             concatenated_text = "".join(text.strip().replace(" ", "") for _, text, _ in results_ocr)
-            motorizado.placa = concatenated_text
+            motorizado.placa = concatenated_text if validar_placa(concatenated_text) else "NNNNNN"
     return motorizados
