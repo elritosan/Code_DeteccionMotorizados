@@ -21,7 +21,7 @@ class MotoDetectorApp:
         self.root.configure(bg="#f0f0f0")  # Fondo de la ventana principal
 
         # Imagen de fondo
-        self.bg_image = Image.open("Resource/Images/ImagenMoto.jpg")
+        self.bg_image = Image.open("Resource/Images/Background_DM.jpg")
         self.bg_image = self.bg_image.resize((self.root.winfo_screenwidth(), self.root.winfo_screenheight()), Image.Resampling.LANCZOS)
         self.bg_photo = ImageTk.PhotoImage(self.bg_image)
 
